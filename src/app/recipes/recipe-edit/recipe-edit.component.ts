@@ -17,7 +17,7 @@ export class RecipeEditComponent implements OnInit {
       .subscribe(
         (params: Params) => {
           this.id =+params['id'],
-          this.edithMode = params['id'] != null;
+            this.edithMode = params['id'] != null; // I think this is like Ternary Operator (三元運算子)
           // console.log(this.edithMode);
         }
       )
