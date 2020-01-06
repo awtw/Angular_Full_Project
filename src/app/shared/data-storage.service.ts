@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { RecipeService } from '../recipes/recipe.service';
 import { Setting } from './setting';
 import { Recipe } from '../recipes/recipe.model';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -21,17 +21,20 @@ export class DataStorageService {
   }
 
   fetchRecipes(){
-    this.http
+    return this.http
       .get<Recipe[]>(this.setting.connectString)
-      .pipe(map(recipes => {
-        return recipes.map(
-          recipe => {
-            return {...recipe, ingredients: recipe.ingredients ? recipe.ingredients : []};
-          }
-        );
-      }))
-      .subscribe(recipes => {
-        this.recipesService.setRecipes(recipes);
-      })
-  }
+      .pipe(
+        map(recipes => {
+        return recipes.map(recipe => {
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : []
+            };
+          });
+        }),
+        tap(recipes => {
+          this.recipesService.setRecipes(recipes);
+        })
+      )
+    }
 }
