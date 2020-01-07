@@ -35,9 +35,9 @@ export class AuthComponent implements OnInit {
 					console.log(resData);
 					this.isLoading = false;
 				},
-				(error) => {
-					console.log(error);
-					this.error = 'An error occurred';
+				(errRes) => {
+          console.log(errRes);
+					this.error = errRes;
 					this.isLoading = false;
 				}
 			);

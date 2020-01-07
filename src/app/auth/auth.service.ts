@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Setting } from '../shared/setting';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 
 interface AuthResponseData{
@@ -22,8 +24,16 @@ export class AuthService {
       email: email,
       password: password,
       returnSecureToken: true
-    });
-
-
+    }).pipe(catchError(errRes => {
+      let errMessage = 'An unknown error occurred';
+      if(!errRes.error || !errRes.error.error){
+        return throwError(errMessage);
+      }
+      switch (errRes.error.error.message) {
+        case 'EMAIL_EXISTS':
+          errMessage = 'This email exists already';
+      }
+      return throwError(errMessage);
+    }));
   }
 }
