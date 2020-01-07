@@ -26,7 +26,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 		this.isLoginMode = !this.isLoginMode;
 	}
 	onSubmit(form: NgForm) {
-		console.log(form.value);
+		// console.log(form.value);
 		if (!form.valid) {
 			return;
 		}
