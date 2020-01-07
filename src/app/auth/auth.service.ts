@@ -5,12 +5,13 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 
-interface AuthResponseData{
+export interface AuthResponseData{
   idToken: string;
   email: string;
   refreshToken: string;
   expiresIn: string;
   localId: string;
+  registered?: boolean;
 }
 
 @Injectable({
@@ -35,5 +36,13 @@ export class AuthService {
       }
       return throwError(errMessage);
     }));
+  }
+
+  login(email: string, password: string){
+    return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+this.setting.webkey, {
+      email: email,
+      password: password,
+      returnSecureToken: true
+    })
   }
 }
