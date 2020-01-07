@@ -25,21 +25,22 @@ export class DataStorageService {
     return this.authService.user.pipe(
       take(1),
       exhaustMap(user => {
-      return this.http.get<Recipe[]>(this.setting.connectString, {
-        params: new HttpParams().set('auth', user.token)
+      return this.http.get<Recipe[]>(this.setting.connectString)
+        .pipe(
+          map(recipes => {
+            return recipes.map(recipe => {
+              return {
+                ...recipe,
+                ingredients: recipe.ingredients ? recipe.ingredients : []
+              };
+            });
+          }),
+          tap(recipes => {
+            this.recipesService.setRecipes(recipes);
+          }));
       })
-      }),
-      map(recipes => {
-        return recipes.map(recipe => {
-          return {
-            ...recipe,
-            ingredients: recipe.ingredients ? recipe.ingredients : []
-          };
-        });
-      }),
-      tap(recipes => {
-        this.recipesService.setRecipes(recipes);
-      }));
+      )
+
 
 
     }
